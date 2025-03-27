@@ -30,7 +30,13 @@ const server = http.createServer((req, res) => {
     // ========== POST REQUEST ===================
     if (path === "/api/posts" && req.method === "POST") {
       try {
-        const newPost = JSON.parse(buffer);
+        const newPostRaw = JSON.parse(buffer);
+        let newPost = {
+          title: newPostRaw.title,
+          body: newPostRaw.body,
+          userId: newPostRaw.userId,
+          id: postList.length + 1,
+        };
         postList.unshift(newPost);
         console.log("Received new post:", newPost);
         fetch("https://jsonplaceholder.typicode.com/posts", {
@@ -116,6 +122,15 @@ const server = http.createServer((req, res) => {
       postId &&
       req.method === "PUT"
     ) {
+      const postIdInt = parseInt(postId);
+      if (postList.length > 0) {
+        const editedPost = JSON.parse(buffer);
+        const postItemIndex = postList.findIndex(
+          (post) => post.id === postIdInt
+        );
+        postList[postItemIndex].title = editedPost.title;
+        postList[postItemIndex].body = editedPost.body;
+      }
       try {
         const editPost = JSON.parse(buffer);
         console.log("Edited post:", editPost);
@@ -150,6 +165,11 @@ const server = http.createServer((req, res) => {
       postId &&
       req.method === "DELETE"
     ) {
+      if (postList.length > 0) {
+        const postIdInt = parseInt(postId);
+        const updatedArray = postList.filter((post) => post.id !== postIdInt);
+        postList = updatedArray;
+      }
       try {
         fetch(`https://jsonplaceholder.typicode.com/posts/${postId}`, {
           method: "DELETE",
