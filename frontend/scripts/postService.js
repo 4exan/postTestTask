@@ -34,12 +34,12 @@ function fetchPostById() {
 }
 
 function createNewPost() {
-  const data = {
+  const newPost = {
     title: `${document.getElementById("newPostTitle").value}`,
     body: `${document.getElementById("newPostBody").value}`,
     userId: 1,
   };
-  if (data.title == "" || data.body == "") {
+  if (newPost.title == "" || newPost.body == "") {
     alert("Post must contain Title and Body");
   } else {
     fetch("http://localhost:3000/api/posts", {
@@ -47,10 +47,12 @@ function createNewPost() {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(data),
+      body: JSON.stringify(newPost),
     })
       .then((response) => response.json())
       .then((data) => {
+        storedPosts.unshift(newPost);
+        displayPosts(storedPosts);
         console.log(data);
       })
       .catch((error) => {
