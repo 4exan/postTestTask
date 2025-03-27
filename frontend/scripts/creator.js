@@ -62,7 +62,7 @@ function buildPage() {
   newPostBtn.classList.add("btn", "approve");
   newPostBtn.textContent = "Create new post";
   const createNewTitle = document.createElement("h1");
-  createNewTitle.textContent = "Fetch Post By ID";
+  createNewTitle.textContent = "Create new post";
 
   addNewPostContainer.appendChild(createNewTitle);
   addNewPostContainer.appendChild(newPostTitle);
@@ -177,6 +177,16 @@ function createPostComponent(post) {
   postDiv.appendChild(btnDiv);
   postComponent.appendChild(postDiv);
   return postComponent;
+}
+
+function createErrorComponent(error) {
+  const itemComponent = document.createElement("li");
+  const errorContainer = document.createElement("div");
+  const errorText = document.createElement("h1");
+  errorText.textContent = `${error}`;
+  errorContainer.appendChild(errorText);
+  itemComponent.appendChild(errorContainer);
+  return itemComponent;
 }
 
 function showEditPanel() {}

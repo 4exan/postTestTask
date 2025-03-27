@@ -28,8 +28,13 @@ function displayPosts(posts) {
 function displaySinglePost(post) {
   const postList = document.getElementById("postList");
   postList.innerHTML = "";
-  const postItem = createPostComponent(post);
-  postList.appendChild(postItem);
+  if (!post?.title || !post?.body) {
+    const postItem = createErrorComponent("No such post with that ID");
+    postList.appendChild(postItem);
+  } else {
+    const postItem = createPostComponent(post);
+    postList.appendChild(postItem);
+  }
 }
 
 function createPostButtonsComponent(post) {
