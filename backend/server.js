@@ -2,6 +2,8 @@ const http = require("http");
 const url = require("url");
 const { StringDecoder } = require("string_decoder");
 
+let postList = [];
+
 const server = http.createServer((req, res) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
@@ -29,6 +31,7 @@ const server = http.createServer((req, res) => {
     if (path === "/api/posts" && req.method === "POST") {
       try {
         const newPost = JSON.parse(buffer);
+        postList.unshift(newPost);
         console.log("Received new post:", newPost);
         fetch("https://jsonplaceholder.typicode.com/posts", {
           method: "POST",
@@ -58,20 +61,26 @@ const server = http.createServer((req, res) => {
       }
       // ============= GET REQUEST =====================
     } else if (path === "/api/posts" && req.method === "GET") {
-      try {
-        fetch("https://jsonplaceholder.typicode.com/posts")
-          .then((response) => response.json())
-          .then((data) => {
-            console.log("Fetching all posts");
-            res.statusCode = 200;
-            res.end(JSON.stringify(data));
-          })
-          .catch((error) => {
-            console.log("Error fetching posts:", error);
-          });
-      } catch (error) {
-        res.statusCode === 500;
-        res.end(JSON.stringify({ message: "Internal Error" }));
+      if (postList.length > 0) {
+        res.statusCode = 200;
+        res.end(JSON.stringify(postList));
+      } else {
+        try {
+          fetch("https://jsonplaceholder.typicode.com/posts")
+            .then((response) => response.json())
+            .then((data) => {
+              console.log("Fetching all posts");
+              postList = data;
+              res.statusCode = 200;
+              res.end(JSON.stringify(postList));
+            })
+            .catch((error) => {
+              console.log("Error fetching posts:", error);
+            });
+        } catch (error) {
+          res.statusCode === 500;
+          res.end(JSON.stringify({ message: "Internal Error" }));
+        }
       }
       // ============ GET REQUEST =========================
     } else if (
@@ -80,19 +89,26 @@ const server = http.createServer((req, res) => {
       req.method === "GET"
     ) {
       const postIdInt = parseInt(postId);
-      try {
-        fetch(`https://jsonplaceholder.typicode.com/posts/${postIdInt}`)
-          .then((response) => response.json())
-          .then((data) => {
-            console.log(`Fetching post with id ${postIdInt}`);
-            res.statusCode = 200;
-            res.end(JSON.stringify(data));
-          })
-          .catch((error) => {
-            console.log(`Error fetching post with id ${postIdInt}:`, error);
-          });
-      } catch (error) {
-        res.statusCode = 404;
+      if (postList.length > 0) {
+        const postItem = postList.find((post) => post.id === postIdInt);
+        console.log("Sending post:", postItem);
+        res.statusCode = 200;
+        res.end(JSON.stringify(postItem));
+      } else {
+        try {
+          fetch(`https://jsonplaceholder.typicode.com/posts/${postIdInt}`)
+            .then((response) => response.json())
+            .then((data) => {
+              console.log(`Fetching post with id ${postIdInt}`);
+              res.statusCode = 200;
+              res.end(JSON.stringify(data));
+            })
+            .catch((error) => {
+              console.log(`Error fetching post with id ${postIdInt}:`, error);
+            });
+        } catch (error) {
+          res.statusCode = 404;
+        }
       }
       // ============ PUT REQUEST ================
     } else if (
