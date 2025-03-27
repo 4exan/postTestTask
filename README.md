@@ -75,6 +75,8 @@ For this project i used color palete "Frappe" by Catppuccin.
 
 Link on GitHub: [link](https://github.com/catppuccin)
 ## Demo
+- Video preview: [link](https://youtu.be/7WeebDlaqHI)
+
 ![image](https://github.com/user-attachments/assets/2a0424ca-ed1d-4244-8e68-cf2a89543e16)
 ![image](https://github.com/user-attachments/assets/e4cdda74-6100-4c92-863f-1d286ac78cbe)
 
