@@ -22,7 +22,7 @@ function fetchPostById() {
         displaySinglePost(data);
       })
       .catch((error) => {
-        console.log("Error fetching posts:", error);
+        console.log("Error fetching post by id:", error);
       });
   }
 }

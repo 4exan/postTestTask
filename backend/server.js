@@ -97,9 +97,14 @@ const server = http.createServer((req, res) => {
       const postIdInt = parseInt(postId);
       if (postList.length > 0) {
         const postItem = postList.find((post) => post.id === postIdInt);
-        console.log("Sending post:", postItem);
-        res.statusCode = 200;
-        res.end(JSON.stringify(postItem));
+        if (postItem) {
+          console.log("Sending post:", postItem);
+          res.statusCode = 200;
+          res.end(JSON.stringify(postItem));
+        } else {
+          res.statusCode = 404;
+          res.end(JSON.stringify({ message: "No post with that ID" }));
+        }
       } else {
         try {
           fetch(`https://jsonplaceholder.typicode.com/posts/${postIdInt}`)
@@ -107,7 +112,7 @@ const server = http.createServer((req, res) => {
             .then((data) => {
               console.log(`Fetching post with id ${postIdInt}`);
               res.statusCode = 200;
-              res.end(JSON.stringify(data));
+              res.end(JSON.stringify(postItem));
             })
             .catch((error) => {
               console.log(`Error fetching post with id ${postIdInt}:`, error);
